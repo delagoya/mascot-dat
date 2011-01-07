@@ -1,0 +1,3 @@
+== DAT Format
+
+The Mascot result format. This is a work in progress (meaning I have not started on it :P ). For now, just use the ms-mascot gem from John Prince.
