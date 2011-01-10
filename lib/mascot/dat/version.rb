@@ -1,5 +1,6 @@
 module Mascot
-  module Dat
-    VERSION = "0.0.1"
+  class Dat
+    VERSION = "0.2.0"
   end
 end
+

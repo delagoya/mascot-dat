@@ -9,13 +9,22 @@ module Mascot
   # 
   # <b>If you do not want this index file created, you need to pass in 
   #   <code> false</code> to the <code>cache_index</code> argument
-  class Dat < File
+  class Dat
     require "uri"
-    attr_accessor :idx
-    attr_accessor :boundary
-
+    attr_reader :idx
+    attr_reader :boundary
+    attr_reader :dat_file
+    SECTIONS = [:summary, :decoy_summary, :et_summary,
+                :parameters, 
+                :peptides, :decoy_peptides, :et_peptides,
+                :proteins,
+                :header, :enzyme, :taxonomy, :unimod, :quantitation,
+                :masses, 
+                :mixture, :decoy_mixture,
+                :index]
+      
     def initialize fn, cache_index=true
-      super(fn)
+      @dat_file = File.open(fn)
       @idx = {}
       @boundary = nil
       @cache_index = cache_index
@@ -29,7 +38,7 @@ module Mascot
     def query(n)
       # search index for this 
       bytepos = @idx["query#{n}".to_sym]
-      pos= bytepos
+      @dat_file.pos = bytepos
       att_rx = /(\w+)\=(.+)/
       q = {}
       each do |l|
@@ -58,16 +67,14 @@ module Mascot
     # Go to a section of the Mascot DAT file
     def goto(key)
       if @idx.has_key?(key.to_sym)
-        self.pos = @idx[key.to_sym]
+        @dat_file.pos = @idx[key.to_sym]
       else
-        raise Excpetion.new "Invalid index key \"#{key}\""
+        raise Exception.new "Invalid DAT section \"#{key}\""
       end
     end
     
     # define methods for positioning cursor at the DAT file MIME sections
-    [:summary, :parameters, :peptides, :proteins,
-      :header, :enzyme, :taxonomy, :unimod, :quantitation,
-      :masses, :mixture, :index].each do |m|
+    SECTIONS.each do |m|
       define_method m do
         self.goto(m)
       end
@@ -78,7 +85,7 @@ module Mascot
     def read_section(key)
       self.goto(key)
       section = ''
-      self.each do |l|
+      @dat_file.each do |l|
         break if l =~ @boundary
         section << l.chomp
       end
@@ -101,18 +108,18 @@ module Mascot
     def create_index
       # grep the boundary positions of the file
       positions = []
-      self.rewind()
+      @dat_file.rewind()
       # MIME header line, to parse out boundary
-      self.readline
-      self.readline =~/boundary=(\w+)$/
+      @dat_file.readline
+      @dat_file.readline =~/boundary=(\w+)$/
       boundary_string = "--#{$1}"
       boundary_length = boundary_string.length
       @boundary = Regexp.new("--#{$1}")
       @idx[:boundary] = @boundary
       
-      self.grep(@boundary) do |l|
-        self.readline =~ /name="(.+)"/
-        @idx[$1.to_sym] = self.pos - boundary_length
+      @dat_file.grep(@boundary) do |l|
+        @dat_file.readline =~ /name="(.+)"/
+        @idx[$1.to_sym] = @dat_file.pos - boundary_length
       end      
       if @cache_index
         idxfile = File.open(path + ".idx", 'w')
@@ -123,8 +130,7 @@ module Mascot
         idxfile.write(Marshall.dump(@idx))
         idxfile.close()
       end
-      self.rewind
+      @dat_file.rewind
     end
-
   end
 end
