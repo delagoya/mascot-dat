@@ -122,13 +122,12 @@ module Mascot
       @dat_file.readline
       @dat_file.readline =~/boundary=(\w+)$/
       boundary_string = "--#{$1}"
-      boundary_length = boundary_string.length
       @boundary = Regexp.new("--#{$1}")
       @idx[:boundary] = @boundary
 
       @dat_file.grep(@boundary) do |l|
         break if @dat_file.eof?
-        section_position = @dat_file.pos - boundary_length
+        section_position = @dat_file.pos - l.length
         @dat_file.readline =~ /name="(.+)"/
         @idx[$1.to_sym] = section_position
       end
