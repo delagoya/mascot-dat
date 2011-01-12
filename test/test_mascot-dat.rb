@@ -1,10 +1,6 @@
-require 'test/unit'
-require 'mascot/dat'
+require 'test_mascot-dat-helper'
 
-class TestMascotDat < Test::Unit::TestCase
-  def setup
-    @dat = Mascot::DAT.open("test/fixtures/example.dat")
-  end
+class TestMascotDat < TestMascotDatHelper
 
   def test_canary
     assert true, "The canary is dead"

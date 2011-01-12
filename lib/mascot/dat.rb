@@ -117,6 +117,11 @@ module Mascot
       Mascot::DAT::Masses.new(self.read_section(:masses))
     end
 
+    def parameters
+      Mascot::DAT::Parameters.new(self.read_section(:parameters))
+    end
+
+
     private
     def parse_index
       idxfn = @dat_file.path + ".idx"

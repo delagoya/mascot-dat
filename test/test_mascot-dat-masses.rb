@@ -1,12 +1,12 @@
-require 'test/unit'
-require 'mascot/dat'
+require 'test_mascot-dat-helper'
 require 'mascot/dat/masses'
+class TestMascotDatMasses < TestMascotDatHelper
 
-class TestMascotDatMasses < Test::Unit::TestCase
   def setup
-    @dat = Mascot::DAT.open("test/fixtures/example.dat")
+    super
     @masses =  @dat.masses
   end
+
   def test_masses
     assert_kind_of(Mascot::DAT::Masses, @masses)
   end
