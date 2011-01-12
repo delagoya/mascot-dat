@@ -110,10 +110,12 @@ module Mascot
     # Parse the enzyme information from the DAT file as a
     #
     # @return [Mascot::DAT::Enzyme]
-    def enzyme_info
+    def enzyme
       Mascot::DAT::Enzyme.new(self.read_section(:enzyme))
     end
-
+    def masses
+      Mascot::DAT::Masses.new(self.read_section(:masses))
+    end
 
     private
     def parse_index

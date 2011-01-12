@@ -1,41 +1,34 @@
---gc0p4Jq0M2Yt08jU534c0p
-Content-Type: application/x-Mascot; name="masses"
+require 'test/unit'
+require 'mascot/dat'
+require 'mascot/dat/masses'
 
-A=71.037114
-B=114.534940
-C=160.030649
-D=115.026943
-E=129.042593
-F=147.068414
-G=57.021464
-H=137.058912
-I=113.084064
-J=0.000000
-K=128.094963
-L=113.084064
-M=131.040485
-N=114.042927
-O=0.000000
-P=97.052764
-Q=128.058578
-R=156.101111
-S=87.032028
-T=101.047679
-U=150.953630
-V=99.068414
-W=186.079313
-X=111.000000
-Y=163.063329
-Z=128.550590
-Hydrogen=1.007825
-Carbon=12.000000
-Nitrogen=14.003074
-Oxygen=15.994915
-Electron=0.000549
-C_term=17.002740
-N_term=1.007825
-delta1=15.994915,Oxidation (M)
-NeutralLoss1=0.000000
-NeutralLoss1_master=63.998285
-FixedMod1=57.021464,Carbamidomethyl (C)
-FixedModResidues1=C
+class TestMascotDatMasses < Test::Unit::TestCase
+  def setup
+    @dat = Mascot::DAT.open("test/fixtures/example.dat")
+    @masses =  @dat.masses
+  end
+  def test_masses
+    assert_kind_of(Mascot::DAT::Masses, @masses)
+  end
+
+  def test_masses_masstable_is_hash
+    assert_kind_of(Hash, @masses.masstable)
+  end
+  def test_masses_delta1
+    # delta1=15.994915,Oxidation (M)
+    assert_equal(15.994915,@masses.masstable[:delta1])
+  end
+  def test_masses_var_mod_is_delta1
+    assert_equal(15.994915,@masses.deltas[0][0])
+    assert_equal("Oxidation (M)",@masses.deltas[0][1])
+  end
+  def test_masses_FixedMod1_mass
+    assert_equal(57.021464,@masses.masstable[:FixedMod1])
+  end
+
+  def test_masses_fixed_mod_is_FixedMod1
+    assert_equal(57.021464,@masses.fixed_mods[0][0])
+    assert_equal("Carbamidomethyl (C)",@masses.fixed_mods[0][1])
+    assert_equal("C",@masses.fixed_mods[0][2])
+  end
+end

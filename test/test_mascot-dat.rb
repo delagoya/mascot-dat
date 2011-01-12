@@ -39,10 +39,15 @@ class TestMascotDat < Test::Unit::TestCase
     assert_equal(expected_text, test_text)
   end
 
-  def test_read_section
+  def test_read_section_enzyme
     expected_section = File.read("test/fixtures/enzyme_section.txt")
     assert_equal(expected_section, @dat.read_section("enzyme"))
     assert_equal(expected_section, @dat.read_section(:enzyme))
+  end
+    def test_read_section_masses
+    expected_section = File.read("test/fixtures/masses_section.txt")
+    assert_equal(expected_section, @dat.read_section("masses"))
+    assert_equal(expected_section, @dat.read_section(:masses))
   end
 
 end
