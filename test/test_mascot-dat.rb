@@ -33,10 +33,16 @@ class TestMascotDat < Test::Unit::TestCase
   def test_goto_summary_section
     @dat.goto("summary")
     # first two lines should be boundary and section statement
-expected_text = "--gc0p4Jq0M2Yt08jU534c0p\nContent-Type: application/x-Mascot; name=\"summary\"\n"
+    expected_text = "--gc0p4Jq0M2Yt08jU534c0p\nContent-Type: application/x-Mascot; name=\"summary\"\n"
     test_text = @dat.dat_file.readline
     test_text += @dat.dat_file.readline
     assert_equal(expected_text, test_text)
+  end
+
+  def test_read_section
+    expected_section = File.read("test/fixtures/enzyme_section.txt")
+    assert_equal(expected_section, @dat.read_section("enzyme"))
+    assert_equal(expected_section, @dat.read_section(:enzyme))
   end
 
 end

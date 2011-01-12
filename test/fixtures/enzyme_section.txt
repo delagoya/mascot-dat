@@ -1,0 +1,13 @@
+--gc0p4Jq0M2Yt08jU534c0p
+Content-Type: application/x-Mascot; name="enzyme"
+
+Title:V8-DE/Trypsin
+Independent:0
+SemiSpecific:0
+Cleavage[0]:KR
+Restrict[0]:P
+Cterm[0]
+Cleavage[1]:BDEZ
+Restrict[1]:P
+Cterm[1]
+*

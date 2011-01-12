@@ -84,22 +84,36 @@ module Mascot
     # define methods for positioning cursor at the DAT file MIME sections
     SECTIONS.each do |m|
       define_method "goto_#{m}".to_sym do
-        self.goto(m)
+        self.goto(m.to_sym)
 
       end
     end
 
-    # read a section of the DAT file into memory.
-    # THIS IS NOT RECOMMENDED UNLESS YOU KNOW WHAT YOU ARE DOING
+    # Read a section of the DAT file into memory. THIS IS NOT
+    # RECOMMENDED UNLESS YOU KNOW WHAT YOU ARE DOING.
+    #
+    # @param [String or Symbol] The section name
+    # @return [String] The section of the DAT file as a String. The section
+    #                  includes the MIME boundary and  content type
+    #                  definition lines.
     def read_section(key)
-      self.goto(key)
-      section = ''
+      self.goto(key.to_sym)
+      # read past the initial boundary marker
+      tmp = @dat_file.readline
       @dat_file.each do |l|
         break if l =~ @boundary
-        section << l.chomp
+        tmp << l
       end
-      section
+      tmp
     end
+
+    # Parse the enzyme information from the DAT file as a
+    #
+    # @return [Mascot::DAT::Enzyme]
+    def enzyme_info
+      Mascot::DAT::Enzyme.new(self.read_section(:enzyme))
+    end
+
 
     private
     def parse_index

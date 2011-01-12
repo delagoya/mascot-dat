@@ -36,7 +36,8 @@ module Mascot
             @independent = v.to_i > 0 ? true : false
           when "SemiSpecific"
             @semi_specific = v.to_i > 0 ? true :false
-          when /^Cleavage\[?(\d?)\]?/
+          when /^Cleavage/
+            k =~ /\[(\d)\]/
             if $1
               @cleavages[$1.to_i] = v
             else
@@ -49,7 +50,7 @@ module Mascot
               @restrictions << v
             end
           when /^(\w)term\[?(\d?)\]?/
-            idx = $2.empty ? 0 : $2.to_i
+            idx = $2.empty? ? 0 : $2.to_i
             @terminals[idx] = $1
           end
         end
