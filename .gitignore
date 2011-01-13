@@ -3,3 +3,4 @@ pkg/*
 .bundle
 *.idx
 Gemfile.lock
+test.rb

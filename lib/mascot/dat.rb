@@ -121,6 +121,9 @@ module Mascot
       Mascot::DAT::Parameters.new(self.read_section(:parameters))
     end
 
+    def peptides(create_psm_index=true)
+      Mascot::DAT::Peptides.new(self.dat_file, self.idx[:peptides])
+    end
 
     private
     def parse_index
