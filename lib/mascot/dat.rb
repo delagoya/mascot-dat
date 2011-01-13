@@ -81,14 +81,6 @@ module Mascot
       end
     end
 
-    # define methods for positioning cursor at the DAT file MIME sections
-    SECTIONS.each do |m|
-      define_method "goto_#{m}".to_sym do
-        self.goto(m.to_sym)
-
-      end
-    end
-
     # Read a section of the DAT file into memory. THIS IS NOT
     # RECOMMENDED UNLESS YOU KNOW WHAT YOU ARE DOING.
     #
@@ -121,8 +113,8 @@ module Mascot
       Mascot::DAT::Parameters.new(self.read_section(:parameters))
     end
 
-    def peptides(create_psm_index=true)
-      Mascot::DAT::Peptides.new(self.dat_file, self.idx[:peptides])
+    def peptides(cache_psm_index=true)
+      Mascot::DAT::Peptides.new(self.dat_file, self.idx[:peptides], cache_psm_index)
     end
 
     private
@@ -146,9 +138,8 @@ module Mascot
       @dat_file.readline
       @dat_file.readline =~/boundary=(\w+)$/
       boundary_string = "--#{$1}"
-      @boundary = Regexp.new("--#{$1}")
+      @boundary = /#{boundary_string}/
       @idx[:boundary] = @boundary
-
       @dat_file.grep(@boundary) do |l|
         break if @dat_file.eof?
         section_position = @dat_file.pos - l.length

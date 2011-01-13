@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+require 'csv'
 module Mascot
   # A parser for the peptide spectrum match results of a Mascot DAT file.
   # As opposed to the other sections of a DAT file, you don't really want to
@@ -30,25 +30,35 @@ module Mascot
 
 
   class DAT::Peptides
-    require 'csv'
+
+    # A hash of the index positions for the peptide PSM matches.
+    # Keys are
+    attr_reader :psm
+
     # To create a peptides enumerable, you need to pass in the dat file handle and
     # the byte offset of the peptides section.
-    def initialize(dat_file, byteoffset)
+    def initialize(dat_file, byteoffset, cache_psm_index=true)
       @byteoffset = byteoffset
       @file = File.new(dat_file,'r')
       @file.pos = @byteoffset
-      # create an in-memroy index of PSM byteoffsets
-      @psm = Array.new(Array.new())
-      q,p  = :0
-      @file.grep(/q(\d+)_p(\d+)/) do |psm|
-        i,j = $1.to_sym, $2.to_sym
-        next if q == i && p == j
-        unless @psm.has_key? i
-          q = i
-          @psm[q] = {}
+      @psm = Array.new()
+      if cache_psm_index
+        # create an in-memroy index of PSM byteoffsets
+        q,p  = 0
+        boundary  = Regexp.new(@file.readline)
+        @file.each do |line|
+          break if line =~ boundary
+          if (line =~ /q(\d+)_p(\d+)/)
+            i,j = $1.to_i, $2.to_i
+            next if q == i && p == j
+            unless @psm[i].kind_of? Array
+              q = i
+              @psm[q] = []
+            end
+            @psm[i][j] = @file.pos - psm.length
+            q,p = i,j
+          end
         end
-        @psm[i][j] = @file.pos - psm.length
-        q,p = i,j
       end
     end
 
