@@ -1,11 +1,6 @@
 require 'test_mascot-dat-helper'
 
 class TestMascotDat < TestMascotDatHelper
-
-  def test_canary
-    assert true, "The canary is dead"
-  end
-
   def test_open_file
     assert_instance_of(Mascot::DAT, @dat)
   end

@@ -25,4 +25,14 @@ class TestMascotDatPeptides < TestMascotDatHelper
     expected_position = 1843073
     assert_equal(expected_position, @peptides.psm[1][1])
   end
+
+  def test_peptides_psm_q11_p2_position
+    # position for q1_p1 PSM from test/fixtures/example.dat
+    expected_position =1871224
+    assert_equal(expected_position, @peptides.psm[11][2])
+  end
+
+  def test_peptides_parse_first_psm
+    pass
+  end
 end
