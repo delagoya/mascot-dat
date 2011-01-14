@@ -32,30 +32,30 @@ module Mascot
   class DAT::Peptides
 
     # A hash of the index positions for the peptide PSM matches.
-    # Keys are
-    attr_reader :psm
-
+    # Keys arr
+    attr_reader :psmidx
     # To create a peptides enumerable, you need to pass in the dat file handle and
     # the byte offset of the peptides section.
     def initialize(dat_file, byteoffset, cache_psm_index=true)
       @byteoffset = byteoffset
       @file = File.new(dat_file,'r')
       @file.pos = @byteoffset
-      @psm = Array.new()
+      @curr_psm = [1,1]
+      @psmidx = Array.new()
       if cache_psm_index
         # create an in-memroy index of PSM byteoffsets
         q,p  = 0
-        boundary  = Regexp.new(@file.readline)
+        @boundary  = Regexp.new(@file.readline)
         @file.each do |line|
           break if line =~ boundary
           if (line =~ /q(\d+)_p(\d+)/)
             i,j = $1.to_i, $2.to_i
             next if q == i && p == j
-            unless @psm[i].kind_of? Array
+            unless @psmidx[i].kind_of? Array
               q = i
-              @psm[q] = []
+              @psmidx[q] = []
             end
-            @psm[i][j] = @file.pos - line.length
+            @psmidx[i][j] = @file.pos - line.length
             q,p = i,j
           end
         end
@@ -66,10 +66,56 @@ module Mascot
       @file.pos = @byteoffset
     end
 
-    def parse_psm value
+    def read_psm q,p
+      @file.pos  =  @psmidx[q][p]
+      tmp = []
+      file.each do |l|
+        break if l =~ @boundary
+        break unless l =~ /q#{q}_p#{p}/
+        tmp << l.chomp
+      end
+      return tmp
     end
 
-    def parse_psm_terms value
+    def parse_psm psm_arr
+      psm_result = {}
+      psm_arr.each do |l|
+        k,v = l.split "="
+        case k
+        when /^q\d+_p\d+$/
+          #main result, must split value
+          psm_vals, prots  = v.split(";")
+          psm_vals = psm_vals.split(',')
+          # proteins in last element
+          psm_result[:proteins] = prots.split(",").map do |pe|
+            acc,*other_vals =  pe.split(":")
+            acc.gsub!(/\"/,'')
+            other_vals.map! {|e| e.to_i }
+            [acc] + other_vals
+          end
+        when /db$/
+          # split on 2 chars, call to_i
+          psm_result[:dbs] = l.split(/(\d{2})/).grep(/\d/) { |e| e.to_i }
+        when /terms$/
+          # for each protein, I have to add the term AA
+          psm_result[:terms] = v.split(":").collect {|t| t.split(",") }
+        else
+          # returns the smaller key
+          k_sym = k.slice(/q\d+_p\d+_?(.+)/,1).to_sym
+          psm_result[k_sym] = v
+        end
+      end
+      psm_result
     end
+
+    # Method to read in and return a result
+    def result(query, rank)
+      parse_psm(read_psm(query,rank))
+    end
+    def each
+
+    end
+
+
   end
 end

@@ -33,6 +33,6 @@ class TestMascotDatPeptides < TestMascotDatHelper
   end
 
   def test_peptides_parse_first_psm
-    pass
+    # expected hash
   end
 end
