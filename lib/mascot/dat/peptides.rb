@@ -47,7 +47,7 @@ module Mascot
         q,p  = 0
         @boundary  = Regexp.new(@file.readline)
         @file.each do |line|
-          break if line =~ boundary
+          break if line =~ @boundary
           if (line =~ /q(\d+)_p(\d+)/)
             i,j = $1.to_i, $2.to_i
             next if q == i && p == j
