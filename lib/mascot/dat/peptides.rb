@@ -55,7 +55,7 @@ module Mascot
               q = i
               @psm[q] = []
             end
-            @psm[i][j] = @file.pos - psm.length
+            @psm[i][j] = @file.pos - line.length
             q,p = i,j
           end
         end
