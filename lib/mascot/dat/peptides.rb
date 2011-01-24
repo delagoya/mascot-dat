@@ -34,6 +34,7 @@ module Mascot
     # A hash of the index positions for the peptide PSM matches.
     # Keys arr
     attr_reader :psmidx
+
     # To create a peptides enumerable, you need to pass in the dat file handle and
     # the byte offset of the peptides section.
     def initialize(dat_file, byteoffset, cache_psm_index=true)
@@ -112,8 +113,10 @@ module Mascot
     def result(query, rank)
       parse_psm(read_psm(query,rank))
     end
-    def each
 
+    def each
+      @psmidx.each do |query|
+        next if query.nil?
     end
 
 

@@ -4,3 +4,4 @@ pkg/*
 *.idx
 Gemfile.lock
 test.rb
+gh.yml
