@@ -39,28 +39,24 @@ class TestMascotDatPeptides < TestMascotDatHelper
     #       16.72,0002000000000000000,0,0;"IPI00848002":0:2:7:1
     # q1_p1_terms=M,Y
     # q1_p1_primary_nl=01000000
-    expected_psm = ::Mascot::DAT::PSM.new()
-
-    expected_psm.query = 1
-    expected_psm.rank = 1
-    expected_psm.missed_cleavages = 1
-    expected_psm.mr = 620.211197
-    expected_psm.delta = 0.220357
-    expected_psm.num_ions_matched = 4
-    expected_psm.pep = "MGDAPD"
-    expected_psm.ions1 = 24
-    expected_psm.var_mods_str = "01000000"
-    expected_psm.score = 16.72
-    expected_psm.ion_series_str = "0002000000000000000"
-    expected_psm.ions2 = 0
-    expected_psm.ions3 = 0
-    expected_psm.proteins = [["IPI00848002",0,2,7,1]]
-    expected_psm.dbs = [2]
-    expected_psm.terms = [["M","Y"]]
-    expected_psm.attrs = {:primary_nl => "01000000"}
-
-    test_psm  = @peptides.psm(1,1)
-    assert_equal(expected_psm, test_psm)
+    q1p1_psm  = @peptides.psm(1,1)
+    assert_equal(1, q1p1_psm.query)
+    assert_equal(1, q1p1_psm.rank)
+    assert_equal(1, q1p1_psm.missed_cleavages)
+    assert_equal(620.211197, q1p1_psm.mr)
+    assert_equal(0.220357, q1p1_psm.delta)
+    assert_equal(4, q1p1_psm.num_ions_matched)
+    assert_equal("MGDAPD", q1p1_psm.pep)
+    assert_equal(24, q1p1_psm.ions1)
+    assert_equal("01000000", q1p1_psm.var_mods_str)
+    assert_equal(16.72, q1p1_psm.score)
+    assert_equal("0002000000000000000", q1p1_psm.ion_series_str)
+    assert_equal(0, q1p1_psm.ions2)
+    assert_equal(0, q1p1_psm.ions3)
+    assert_equal([["IPI00848002",0,2,7,1]], q1p1_psm.proteins)
+    assert_equal([2], q1p1_psm.dbs)
+    assert_equal([["M","Y"]], q1p1_psm.terms)
+    assert_equal({:primary_nl => "01000000"}, q1p1_psm.attrs)
   end
 
 end
