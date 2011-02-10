@@ -12,7 +12,7 @@ class TestMascotDatParameters < TestMascotDatHelper
   end
 
   def test_params_mods
-    assert_equal("Carbamidomethyl (C)", @parameters.params["MODS"])
+    assert_equal("Carbamidomethyl (C)", @parameters.parameters["MODS"])
   end
 
 end
