@@ -103,14 +103,18 @@ module Mascot
     #
     # @return [Mascot::DAT::Enzyme]
     def enzyme
-      Mascot::DAT::Enzyme.new(self.read_section(:enzyme))
+      @enzyme ||= Mascot::DAT::Enzyme.new(self.read_section(:enzyme))
     end
     def masses
-      Mascot::DAT::Masses.new(self.read_section(:masses))
+      @masses ||= Mascot::DAT::Masses.new(self.read_section(:masses))
     end
 
     def parameters
-      Mascot::DAT::Parameters.new(self.read_section(:parameters))
+      @params ||= Mascot::DAT::Parameters.new(self.read_section(:parameters))
+    end
+
+    def search_databases
+      @search_databases ||= Mascot::DAT::SearchDatabases.new(parameters)
     end
 
     def peptides(cache_psm_index=true)
