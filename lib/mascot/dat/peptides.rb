@@ -29,80 +29,82 @@ module Mascot
   #
 
 
-  class DAT::Peptides
-    include Enumerable
-    # A hash of the index positions for the peptide PSM matches.
-    # Keys arr
-    attr_reader :psmidx, :byteoffset, :endbytepos
+  class DAT
+    class Peptides
+      include Enumerable
+      # A hash of the index positions for the peptide PSM matches.
+      # Keys arr
+      attr_reader :psmidx, :byteoffset, :endbytepos
 
-    # To create a peptides enumerable, you need to pass in the dat file handle and
-    # the byte offset of the peptides section.
-    def initialize(dat_file, byteoffset, cache_psm_index=true)
-      @byteoffset = byteoffset
-      @endbytepos = nil
+      # To create a peptides enumerable, you need to pass in the dat file handle and
+      # the byte offset of the peptides section.
+      def initialize(dat_file, byteoffset, cache_psm_index=true)
+        @byteoffset = byteoffset
+        @endbytepos = nil
 
-      @file = File.new(dat_file,'r')
-      @file.pos = @byteoffset
-      @curr_psm = [1,1]
-      @psmidx = []
-      if cache_psm_index
-        index_psm_positions
-      end
-    end
-
-    def index_psm_positions
-      # create an in-memroy index of PSM byteoffsets
-      q,p  = 0
-      boundary_line = @file.readline
-      @boundary   = Regexp.new(boundary_line)
-      @file.each do |line|
-        break if line =~ @boundary
-        if (line =~ /q(\d+)_p(\d+)/)
-          i,j = $1.to_i, $2.to_i
-          next if q == i && p == j
-          unless @psmidx[i].kind_of? Array
-            q = i
-            @psmidx[q] = []
-          end
-          @psmidx[i][j] = @file.pos - line.length
-          q,p = i,j
+        @file = File.new(dat_file,'r')
+        @file.pos = @byteoffset
+        @curr_psm = [1,1]
+        @psmidx = []
+        if cache_psm_index
+          index_psm_positions
         end
       end
-      @endbytepos = @file.pos - boundary_line.length
-      rewind
-    end
 
-
-    def rewind
-      @file.pos = @byteoffset
-    end
-
-    def psm q,p
-      @file.pos  =  @psmidx[q][p]
-      next_psm
-    end
-
-    def next_psm
-      return nil if @file.pos >= @endbytepos
-      # get the initial values for query & rank
-      tmp = []
-      tmp << @file.readline.chomp
-      tmp[0] =~ /q(\d+)_p(\d+)/
-      q = $1
-      p = $2
-      @file.each do |l|
-        break if l =~ @boundary
-        break unless l =~ /^q#{q}_p#{p}/
-        tmp << l.chomp
+      def index_psm_positions
+        # create an in-memroy index of PSM byteoffsets
+        q,p  = 0
+        boundary_line = @file.readline
+        @boundary   = Regexp.new(boundary_line)
+        @file.each do |line|
+          break if line =~ @boundary
+          if (line =~ /q(\d+)_p(\d+)/)
+            i,j = $1.to_i, $2.to_i
+            next if q == i && p == j
+            unless @psmidx[i].kind_of? Array
+              q = i
+              @psmidx[q] = []
+            end
+            @psmidx[i][j] = @file.pos - line.length
+            q,p = i,j
+          end
+        end
+        @endbytepos = @file.pos - boundary_line.length
+        rewind
       end
-      Mascot::DAT::PSM.parse(tmp)
-    end
+
+
+      def rewind
+        @file.pos = @byteoffset
+      end
+
+      def psm q,p
+        @file.pos  =  @psmidx[q][p]
+        next_psm
+      end
+
+      def next_psm
+        return nil if @file.pos >= @endbytepos
+        # get the initial values for query & rank
+        tmp = []
+        tmp << @file.readline.chomp
+        tmp[0] =~ /q(\d+)_p(\d+)/
+        q = $1
+        p = $2
+        @file.each do |l|
+          break if l =~ @boundary
+          break unless l =~ /^q#{q}_p#{p}/
+          tmp << l.chomp
+        end
+        Mascot::DAT::PSM.parse(tmp)
+      end
 
 
 
-    def each
-      while @file.pos < @endbytepos
-        yield next_psm()
+      def each
+        while @file.pos < @endbytepos
+          yield next_psm()
+        end
       end
     end
   end
