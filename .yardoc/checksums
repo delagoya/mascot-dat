@@ -1,0 +1,11 @@
+lib/mascot/dat.rb b88a041f4bf7ef293130c9c2b1100a317d4fa943
+lib/mascot/dat/psm.rb 4bab5c310d036f8b4d4def9bd749abbadd7b3eae
+lib/mascot/dat/masses.rb 1d10ce4e3312596683327844e2e6e972d9c01cdd
+lib/mascot/dat/enzyme.rb 63395926427738100e4ff2cef388dc70a9ba690f
+lib/mascot/dat/summary.rb c4b80eeec5521259ba3488e24df76051b1f41843
+lib/mascot/dat/version.rb 9943412aada287b3842feb5be27211f1b9f54f0e
+lib/mascot/dat/peptides.rb 63473adff353eecfaa7d2081f12fa159d64fe6c2
+lib/mascot/dat/proteins.rb 23130851dd2102bcf5865f2d2eb55f041f3acccc
+lib/mascot/dat/parameters.rb 26eeb19a444f39617ac4b6a01a8cafbd83d5b68d
+lib/mascot/dat/header_info.rb e59e034a8ead809717b17f88d9dd61554ddd4ac5
+lib/mascot/dat/search_databases.rb 25f127e4427995bc75cd3ca531d1df52751b7712

@@ -14,14 +14,10 @@ module Mascot
     attr_reader :idx
     attr_reader :boundary
     attr_reader :dat_file
-    SECTIONS = %w{ summary decoy_summary et_summary
-                   parameters
-                   peptides decoy_peptides et_peptides
-                   proteins
-                   header enzyme taxonomy unimod quantitation
-                   masses
-                   mixture decoy_mixture
-                   index }
+    SECTIONS = ["summary", "decoy_summary", "et_summary", "parameters",
+                "peptides", "decoy_peptides", "et_peptides",
+                "proteins", "header", "enzyme", "taxonomy", "unimod",
+                "quantitation", "masses", "mixture", "decoy_mixture", "index"]
 
     def initialize(dat_file_path, cache_index=true)
       @dat_file = File.open(dat_file_path)

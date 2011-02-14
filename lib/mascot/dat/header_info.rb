@@ -1,5 +1,5 @@
 module Mascot
-  class Dat
+  class DAT
     class HeaderInfo
       #--
       # Example DAT header

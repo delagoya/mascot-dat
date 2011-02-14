@@ -4,7 +4,7 @@ require "mascot/dat/version"
 
 Gem::Specification.new do |s|
   s.name        = "mascot-dat"
-  s.version     = Mascot::Dat::VERSION
+  s.version     = Mascot::DAT::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Angel Pizarro"]
   s.email       = ["delagoya@gmail.com"]
