@@ -96,24 +96,32 @@ module Mascot
       tmp
     end
 
-    # Parse the enzyme information from the DAT file as a
+    # Parse the enzyme information from the DAT file
     #
-    # @return [Mascot::DAT::Enzyme]
+    # @return [[Mascot::DAT::Enzyme]]
     def enzyme
       @enzyme ||= Mascot::DAT::Enzyme.new(self.read_section(:enzyme))
     end
+    # Parse the masses section of the  DAT file
+    #
+    # @return [Mascot::DAT::Masses]
     def masses
       @masses ||= Mascot::DAT::Masses.new(self.read_section(:masses))
     end
-
+    # Parses parameters from DAT file
+    # @return [Mascot::DAT::Parameters]
     def parameters
       @params ||= Mascot::DAT::Parameters.new(self.read_section(:parameters))
     end
 
+    # Parses and return search databases from DAT file
+    # @return [Mascot::DAT::SearchDatabases]
     def search_databases
       @search_databases ||= Mascot::DAT::SearchDatabases.new(parameters)
     end
 
+    # Puts the IO cursor at the beginning of peptide result section. Returns an iterator/parser for PSM results
+    # @return [Mascot::DAT::Peptides]
     def peptides(cache_psm_index=true)
       Mascot::DAT::Peptides.new(self.dat_file, self.idx[:peptides], cache_psm_index)
     end
