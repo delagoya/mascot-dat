@@ -5,3 +5,5 @@ pkg/*
 Gemfile.lock
 test.rb
 gh.yml
+doc/*
+.yardoc
