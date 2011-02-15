@@ -64,8 +64,9 @@ module Mascot
           next
         end
       end
-      return q
+      q
     end
+
     alias_method :spectrum, :query
 
     # Go to a section of the Mascot DAT file

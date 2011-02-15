@@ -13,6 +13,6 @@ end
 require 'yard'
 require 'yard/rake/yardoc_task'
 YARD::Rake::YardocTask.new do |t|
-  t.files   = ['lib/**/*.rb', "README"]   # optional
-  t.options = [] # optional
+  t.files   = ['lib/**/*.rb']   # optional
+  t.options = ["--files README.rdoc -r README.rdoc"] # optional
 end
