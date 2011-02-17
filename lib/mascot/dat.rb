@@ -58,6 +58,8 @@ module Mascot
           else
             q[k.to_sym] = v
           end
+        when "Ions1"
+          q[:peaks] = parse_mzi(v)
         when @boundary
           break
         else
@@ -68,6 +70,15 @@ module Mascot
     end
 
     alias_method :spectrum, :query
+    def parse_mzi(ions_str)
+      mzi  = [[],[]]
+      ions_str.split(",").collect do |mzpair|
+        tmp = mzpair.split(":").collect {|e| e.to_f}
+        mzi[0] << tmp[0]
+        mzi[1] << tmp[1]
+      end
+      mzi
+    end
 
     # Go to a section of the Mascot DAT file
     def goto(key)
@@ -124,6 +135,10 @@ module Mascot
     # @return [Mascot::DAT::Peptides]
     def peptides(cache_psm_index=true)
       Mascot::DAT::Peptides.new(self.dat_file, self.idx[:peptides], cache_psm_index)
+    end
+
+    def proteins(cache_protein_byteoffsets=true)
+      Mascot::DAT::Proteins.new(self.dat_file, self.idx[:proteins], cache_protein_byteoffsets)
     end
 
     private
