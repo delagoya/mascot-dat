@@ -137,6 +137,11 @@ module Mascot
       Mascot::DAT::Peptides.new(self.dat_file, self.idx[:peptides], cache_psm_index)
     end
 
+    def decoy_peptides(cache_psm_index=true)
+      Mascot::DAT::Peptides.new(self.dat_file, self.idx[:decoy_peptides], cache_psm_index)
+    end
+
+
     def proteins(cache_protein_byteoffsets=true)
       Mascot::DAT::Proteins.new(self.dat_file, self.idx[:proteins], cache_protein_byteoffsets)
     end
