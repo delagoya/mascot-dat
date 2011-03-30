@@ -46,6 +46,7 @@ module Mascot
         @file.pos = @byteoffset
         @curr_psm = [1,1]
         @psmidx = []
+        @cache_psm_index = cache_psm_index
         index_psm_positions()
       end
 
@@ -56,7 +57,7 @@ module Mascot
         @boundary   = Regexp.new(boundary_line)
         @file.each do |line|
           break if line =~ @boundary
-          if cache_psm_index
+          if @cache_psm_index
             line =~ /q(\d+)_p(\d+)/
             i,j = $1.to_i, $2.to_i
             next if q == i && p == j
