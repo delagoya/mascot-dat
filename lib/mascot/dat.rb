@@ -1,3 +1,15 @@
+require 'mascot/dat/enzyme'
+require 'mascot/dat/header_info'
+require 'mascot/dat/masses'
+require 'mascot/dat/parameters'
+require 'mascot/dat/peptides'
+require 'mascot/dat/proteins'
+require 'mascot/dat/psm'
+require 'mascot/dat/search_databases'
+require 'mascot/dat/summary'
+require 'mascot/dat/version'
+require "uri"
+
 module Mascot
   # A parser for Mascot flat file results.
   #
@@ -10,7 +22,6 @@ module Mascot
   # <b>If you do not want this index file created, you need to pass in
   #   <code> false</code> to the <code>cache_index</code> argument
   class DAT
-    require "uri"
     attr_reader :idx
     attr_reader :boundary
     attr_reader :dat_file
