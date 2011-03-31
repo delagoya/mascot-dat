@@ -11,11 +11,13 @@ module Mascot
       # Content-Type: application/x-Mascot; name=”proteins”
       # “accession string”=protein mass, “title text”
       # ...
+      attr_accessor :byteoffset, :dat_file, :endbytepos, :idx
 
       def initialize(dat_file,byteoffset,cache_index=true)
         @byteoffset = byteoffset
-        @file = File.new(dat_file, 'r')
-        @file.pos = byteoffset
+        @dat_file = File.new(dat_file, 'r')
+        @dat_file.pos = byteoffset
+        @endbytepos = @dat_file.stat.size
         @idx = {}
         if cache_index
           index_protein_positions
@@ -23,22 +25,22 @@ module Mascot
       end
 
       def rewind
-        @file.pos = @byteoffset
+        @dat_file.pos = @byteoffset
       end
 
       def protein(accession)
-        @file.pos = @idx[accession] if accession
+        @dat_file.pos = @idx[accession] if accession
         next_entry
       end
 
       def next_entry
-        return nil if @file.pos >= @endbytepos
-        parse_entry(@file.readline)
+        return nil if @dat_file.pos >= @endbytepos
+        parse_entry(@dat_file.readline)
       end
 
 
       def each
-        while @file.pos < @endbytepos
+        while @dat_file.pos < @endbytepos
           yield next_entry
         end
       end
@@ -47,18 +49,22 @@ module Mascot
       private
       def parse_entry(line)
         line.chomp =~ PROT_REGEXP
-        ProteinEntry.new(:accession => $1, :mr => $2, :desc => $3)
+        pe = ProteinEntry.new()
+        pe.accession = $1
+        pe.mr = $2
+        pe.desc = $3
+        pe
       end
 
       def index_protein_positions
-        boundary_line = @file.readline
+        boundary_line = @dat_file.readline
         @boundary= /#{boundary_line}/
-        @file.each do |line|
+        @dat_file.each do |line|
           break if line =~ @boundary
           acc, rest = line.split("=",2)
-          @idx[acc] = @file.pos - line.length
+          @idx[acc] = @dat_file.pos - line.length
         end
-        @endbytepos = @file.pos = boundary_line.length
+        @endbytepos = @dat_file.pos = boundary_line.length
         rewind
       end
 
