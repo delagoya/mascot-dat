@@ -7,14 +7,15 @@ Gem::Specification.new do |s|
   s.version     = Mascot::DAT::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Angel Pizarro"]
-  s.email       = ["delagoya@gmail.com"]
+  s.email       = ["angel@upenn.edu"]
   s.homepage    = "http://github.com/delagoya/mascot-dat"
   s.summary     = %q{Mascot DAT file format parser}
   s.description = s.summary
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.add_dependency "mascot-mgf", "= 0.2.0"
+  s.add_dependency "mascot-mgf", "~> 0.2"
   s.require_paths = ["lib"]
-
+  s.add_development_dependency "rake"
+  s.add_development_dependency "yard"
 end
