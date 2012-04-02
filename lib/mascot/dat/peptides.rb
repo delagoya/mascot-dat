@@ -42,9 +42,7 @@ module Mascot
         @byteoffset = byteoffset
         @endbytepos = nil
 
-        #@file = File.new(dat_file,'r') 
-        # ================> changed to 
-        @file = dat_file 
+        @file = dat_file
 
         @file.pos = @byteoffset
         @curr_psm = [1,1]
@@ -77,9 +75,7 @@ module Mascot
       end
 
       def rewind
-        #@file.pos = @byteoffset  
-        # ===============> changed to 
-        @file.pos = @psmidx[1][1] # go to the first line of psm, while @byteoffset goes to the boundary string ex. gc0p4Jq0M2Yt08jU534c0p
+        @file.pos = @byteoffset + @boundary.length
       end
 
       def psm q,p
@@ -92,43 +88,31 @@ module Mascot
         # get the initial values for query & rank
         tmp = []
         tmp << @file.readline.chomp
-
-        # ===========> added these 2 lines
         k,v = tmp[0].split "="
-        return nil if v == "-1" # skip when there are no peptides (value equals -1)
+        # skip when there are no peptides (value equals -1)
+        return nil if v == "-1"
 
         tmp[0] =~ /q(\d+)_p(\d+)/
         q = $1
         p = $2
 
-        # ==============> added file position handler to set the file position to the start of the next psm
-        # because it finishes a psm when it reads a new q#{q}_p#{p}, so it has already gone to the new psm
-        # that means that when it does next_psm it misses the first line of the psm
-        # ==============> added this line
         tmp_pos = @file.pos
         @file.each do |l|
           break if l =~ @boundary
           break unless l =~ /^q#{q}_p#{p}/
           tmp << l.chomp
-          # ==============> added this line
           tmp_pos = @file.pos
         end
-        # ==============> added this line
-        @file.pos = tmp_pos 
+        @file.pos = tmp_pos
 
         Mascot::DAT::PSM.parse(tmp)
       end
 
       def each
         while @file.pos < @endbytepos
-          #yield next_psm()
-          # ===========> changed to this block
           psm = next_psm()
-          if psm.nil? 
-             next # go to next line when psm is empty (there are no peptides, when value equals -1)
-          else 
-             yield psm # go to next_psm
-          end
+          next if psm.nil?
+          yield psm
         end
       end
     end
