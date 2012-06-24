@@ -39,11 +39,12 @@ module Mascot
           k,v = l.split "="
           case k
           when /^q(\d+)_p(\d+)$/
+            # just put query & rank in the beginning, because $1, $2 return zero after the split
+            psm_result.query = $1.to_i
+            psm_result.rank = $2.to_i
             #main result, must split value
             psm_vals, prots  = v.split(";")
             psm_vals = psm_vals.split(',')
-            psm_result.query = $1.to_i
-            psm_result.rank = $2.to_i
             psm_result.missed_cleavages= psm_vals[0].to_i
             psm_result.mr              = psm_vals[1].to_f
             psm_result.delta           = psm_vals[2].to_f

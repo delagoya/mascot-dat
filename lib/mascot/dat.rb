@@ -54,6 +54,7 @@ module Mascot
       # search index for this
       bytepos = @idx["query#{n}".to_sym]
       @dat_file.pos = bytepos
+      @dat_file.readline # ADDED
       att_rx = /(\w+)\=(.+)/
       q = {}
       each do |l|
@@ -66,11 +67,11 @@ module Mascot
             q[k.to_sym] = URI.decode(v)
             # when "Ions1"
             #   q[k.to_sym] = v.split(",").collect {|e| e.split(":").collect {|ee| ee.to_f}}
+          when "Ions1" # CHANGED POSITION TO GET IN THE BLOCK AND DO THE PARSE TO GET THE ARRAY
+            q[:peaks] = parse_mzi(v)
           else
             q[k.to_sym] = v
           end
-        when "Ions1"
-          q[:peaks] = parse_mzi(v)
         when @boundary
           break
         else
