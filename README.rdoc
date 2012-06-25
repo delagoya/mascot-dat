@@ -1,4 +1,4 @@
-== DAT Format
+== Mascot-DAT Parser
 
 A gem for reading results from the  Mascot proteomics search engine. The format used by Mascot is a DAT file and is fully describe within the Mascot Installation and Setup guide. Matrix Science (http://matrixscience.com) does not support natively accessing the DAT file format, and instead urge developers to use their supported mascot_parser library for accessing DAT file information. 
 
