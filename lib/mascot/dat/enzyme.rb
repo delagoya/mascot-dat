@@ -35,7 +35,7 @@ module Mascot
           when "Independent"
             @independent = v.to_i > 0 ? true : false
           when "SemiSpecific"
-            @semi_specific = v.to_i > 0 ? true :false
+            @semi_specific = v.to_i > 0 ? true : false
           when /^Cleavage/
             k =~ /\[(\d)\]/
             if $1

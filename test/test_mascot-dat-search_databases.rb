@@ -19,6 +19,6 @@ class TestMascotDatSearchDatabases < TestMascotDatHelper
   end
   def test_db1
     # DB2=IPI_human
-    assert_equal("IPI_human", @dbs[1])
+    assert_equal("Uniprot_mus", @dbs[1])
   end
 end
