@@ -4,3 +4,4 @@ Gemfile*
 doc/
 lib/
 test/
+pkg/
