@@ -65,9 +65,7 @@ module Mascot
           case k
           when "title"
             q[k.to_sym] = URI.decode(v)
-            # when "Ions1"
-            #   q[k.to_sym] = v.split(",").collect {|e| e.split(":").collect {|ee| ee.to_f}}
-          when "Ions1" # CHANGED POSITION TO GET IN THE BLOCK AND DO THE PARSE TO GET THE ARRAY
+          when "Ions1"
             q[:peaks] = parse_mzi(v)
           else
             q[k.to_sym] = v
