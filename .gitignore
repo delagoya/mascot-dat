@@ -1,0 +1,6 @@
+*~
+.yardoc/
+Gemfile*
+doc/
+lib/
+test/
