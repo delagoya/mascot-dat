@@ -104,7 +104,7 @@ module Mascot
     # Read a section of the DAT file into memory. THIS IS NOT
     # RECOMMENDED UNLESS YOU KNOW WHAT YOU ARE DOING.
     #
-    # @param [String or Symbol] The section name
+    # @param key [String or Symbol] The section name
     # @return [String] The section of the DAT file as a String. The section
     #                  includes the MIME boundary and  content type
     #                  definition lines.
