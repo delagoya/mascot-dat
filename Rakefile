@@ -8,7 +8,6 @@ Rake::TestTask.new do |t|
   t.verbose = true
 end
 
-
 # documentation
 require 'yard'
 require 'yard/rake/yardoc_task'
