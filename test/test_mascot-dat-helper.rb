@@ -9,4 +9,7 @@ class TestMascotDatHelper < Test::Unit::TestCase
     pass
   end
 
+  # def teardown
+  #   File.unlink("test/fixtures/example.dat.idx")
+  # end
 end

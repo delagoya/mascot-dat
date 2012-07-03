@@ -24,6 +24,7 @@ module Mascot
   class DAT
     attr_reader :idx
     attr_reader :boundary
+    attr_reader :boundary_string
     attr_reader :dat_file
     SECTIONS = ["summary", "decoy_summary", "et_summary", "parameters",
                 "peptides", "decoy_peptides", "et_peptides",
@@ -34,6 +35,7 @@ module Mascot
       @dat_file = File.open(dat_file_path)
       @idx = {}
       @boundary = nil
+      @boundary_string = nil
       @cache_index = cache_index
       parse_index
     end
@@ -53,11 +55,10 @@ module Mascot
     def query(n)
       # search index for this
       bytepos = @idx["query#{n}".to_sym]
-      @dat_file.pos = bytepos
-      @dat_file.readline # ADDED
+      @dat_file.pos = bytepos + @boundary_string.length
       att_rx = /(\w+)\=(.+)/
       q = {}
-      each do |l|
+      @dat_file.each do |l|
         l.chomp
         case l
         when att_rx
@@ -80,15 +81,7 @@ module Mascot
     end
 
     alias_method :spectrum, :query
-    def parse_mzi(ions_str)
-      mzi  = [[],[]]
-      ions_str.split(",").collect do |mzpair|
-        tmp = mzpair.split(":").collect {|e| e.to_f}
-        mzi[0] << tmp[0]
-        mzi[1] << tmp[1]
-      end
-      mzi
-    end
+
 
     # Go to a section of the Mascot DAT file
     def goto(key)
@@ -163,6 +156,7 @@ module Mascot
         idxf = File.open(idxfn)
         @idx = ::Marshal.load(idxf.read)
         @boundary = @idx[:boundary]
+        @boundary_string = @idx[:boundary_string]
         idxf.close
       else
         create_index()
@@ -176,9 +170,10 @@ module Mascot
       # MIME header line, to parse out boundary
       @dat_file.readline
       @dat_file.readline =~/boundary=(\w+)$/
-      boundary_string = "--#{$1}"
-      @boundary = /#{boundary_string}/
+      @boundary_string = "--#{$1}"
+      @boundary = /#{@boundary_string}/
       @idx[:boundary] = @boundary
+      @idx[:boundary_string] = @boundary_string
       @dat_file.grep(@boundary) do |l|
         break if @dat_file.eof?
         section_position = @dat_file.pos - l.length
@@ -192,6 +187,17 @@ module Mascot
         idxfile.close()
       end
       @dat_file.rewind
+    end
+
+    # Parse the ion string of mz/intensity peaks in Ions section
+    # Peaks are not ordered, so we must account for that.
+    def parse_mzi(ions_str)
+      mzi_tmp = []
+      ions_str.split(",").collect do |mzpair|
+        mzi_tmp <<  mzpair.split(":").collect {|e| e.to_f}
+      end
+      # now sort the mz_tmp array as ascending m/z, and return the array
+      mzi_tmp.sort
     end
   end
 end

@@ -17,6 +17,7 @@ class TestMascotDatMasses < TestMascotDatHelper
   def test_masses_delta1
     # delta1=15.994915,Oxidation (M)
     assert_equal(15.994915,@masses.masstable[:delta1])
+    assert_equal(15.994915,@masses.delta1)
   end
   def test_masses_var_mod_is_delta1
     assert_equal(15.994915,@masses.deltas[0][0])
@@ -24,6 +25,7 @@ class TestMascotDatMasses < TestMascotDatHelper
   end
   def test_masses_FixedMod1_mass
     assert_equal(57.021464,@masses.masstable[:FixedMod1])
+    assert_equal(57.021464,@masses.FixedMod1)
   end
 
   def test_masses_fixed_mod_is_FixedMod1

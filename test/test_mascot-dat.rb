@@ -35,10 +35,17 @@ class TestMascotDat < TestMascotDatHelper
     assert_equal(expected_section, @dat.read_section("enzyme"))
     assert_equal(expected_section, @dat.read_section(:enzyme))
   end
-    def test_read_section_masses
+
+  def test_read_section_masses
     expected_section = File.read("test/fixtures/masses_section.txt")
     assert_equal(expected_section, @dat.read_section("masses"))
     assert_equal(expected_section, @dat.read_section(:masses))
+  end
+
+  def test_peaks
+    expected_peaks = Marshal.load(File.read("test/fixtures/query23_peaks.dmp"))
+    query23 = @dat.query(23)
+    assert_equal(expected_peaks,query23[:peaks])
   end
 
 end

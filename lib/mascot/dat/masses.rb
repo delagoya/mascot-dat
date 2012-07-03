@@ -79,7 +79,9 @@ module Mascot
           else
             @masstable[k.to_sym] = v.to_f
           end
-          define_method(k) {@masstable[k.to_sym]}
+          @masstable.keys.each do |m|
+            self.class.send(:define_method,m, lambda { @masstable[m] })
+          end
         end
       end
     end
