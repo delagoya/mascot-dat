@@ -10,3 +10,5 @@ gh.yml
 doc/*
 .yardoc
 scratch.rb
+*.sublime-project
+*.sublime-workspace
