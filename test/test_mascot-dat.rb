@@ -9,6 +9,10 @@ class TestMascotDat < TestMascotDatHelper
     assert_equal(Regexp.new("--gc0p4Jq0M2Yt08jU534c0p"), @dat.boundary)
   end
 
+  def test_dat_boundary_string
+    assert_equal("--gc0p4Jq0M2Yt08jU534c0p", @dat.boundary_string)
+  end
+
   def test_dat_byteoffset_index_is_created
     File.unlink(@dat.dat_file.path + ".idx") if File.exists?(@dat.dat_file.path + ".idx")
     @dat = Mascot::DAT.open("test/fixtures/example.dat")
@@ -40,12 +44,6 @@ class TestMascotDat < TestMascotDatHelper
     expected_section = File.read("test/fixtures/masses_section.txt")
     assert_equal(expected_section, @dat.read_section("masses"))
     assert_equal(expected_section, @dat.read_section(:masses))
-  end
-
-  def test_peaks
-    expected_peaks = Marshal.load(File.read("test/fixtures/query23_peaks.dmp"))
-    query23 = @dat.query(23)
-    assert_equal(expected_peaks,query23[:peaks])
   end
 
 end

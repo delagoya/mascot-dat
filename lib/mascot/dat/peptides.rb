@@ -6,7 +6,7 @@ module Mascot
     # access this section as one big chunk in memory. It is often quite large and
     # needs to be accessed using Enumerable methods.
     #
-    # From the Mascot documentation, results are CSV list with the following information
+    # From the Mascot documentation, the following represents a reasonably complete PSM
     #     q1_p1_db=01  # two digit integer of the search DB index, zero filled and retarded.
     #     q1_p1=missed cleavages, (–1 indicates no match)
     #           peptide Mr,
@@ -76,11 +76,17 @@ module Mascot
         @file.pos = @byteoffset + @boundary_line.length
       end
 
+      # Return a specific {Mascot::DAT::PSM} identified for query <code>q</code> and peptide number <code>p</code>
+      # @param q Fixnum
+      # @param p Fixnum
+      # @return Mascot::DAT::PSM
       def psm q,p
         @file.pos  =  @psmidx[q][p]
         next_psm
       end
 
+      # Returns the next {Mascot::DAT::PSM} from the DAT file. If there is no other PSM, then it returns nil.
+      # @return Mascot::DAT::PSM
       def next_psm
         return nil if @file.pos >= @endbytepos
         # get the initial values for query & rank
@@ -106,7 +112,10 @@ module Mascot
         Mascot::DAT::PSM.parse(tmp)
       end
 
+      # Iterate through all of the {Mascot::DAT::PSM} entries in the DAT file.
+      # @return Enumerator
       def each
+        @file.pos = @byteoffset
         while @file.pos < @endbytepos
           psm = next_psm()
           next if psm.nil?

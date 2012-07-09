@@ -34,8 +34,9 @@ module Mascot
       end
       def self.parse psm_arr
         psm_result =  self.new()
-
         psm_arr.each do |l|
+          next unless l =~ /^q/
+
           k,v = l.split "="
           case k
           when /^q(\d+)_p(\d+)$/
@@ -69,6 +70,7 @@ module Mascot
             psm_result.terms = v.split(":").collect {|t| t.split(",") }
           else
             # returns the smaller key
+            puts "****#{k}***"
             k_sym = k.slice(/q\d+_p\d+_?(.+)/,1).to_sym
             psm_result.attrs[k_sym] = v
           end

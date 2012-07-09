@@ -6,6 +6,7 @@ require 'mascot/dat/parameters'
 require 'mascot/dat/peptides'
 require 'mascot/dat/proteins'
 require 'mascot/dat/psm'
+require "mascot/dat/query"
 require 'mascot/dat/search_databases'
 require 'mascot/dat/summary'
 require 'mascot/dat/version'
@@ -48,40 +49,14 @@ module Mascot
       @dat_file.close
     end
 
-    # Read in the query spectrum from the DAT file
+    # Return a specific query spectrum from the DAT file
     #
     # @param n  The query spectrum numerical index
-    # @return   Hash of the spectrum. The hash has
+    # @return  {Mascot::DAT::Query}
     def query(n)
-      # search index for this
-      bytepos = @idx["query#{n}".to_sym]
-      @dat_file.pos = bytepos + @boundary_string.length
-      att_rx = /(\w+)\=(.+)/
-      q = {}
-      @dat_file.each do |l|
-        l.chomp
-        case l
-        when att_rx
-          k,v = $1,$2
-          case k
-          when "title"
-            q[k.to_sym] = URI.decode(v)
-          when "Ions1"
-            q[:peaks] = parse_mzi(v)
-          else
-            q[k.to_sym] = v
-          end
-        when @boundary
-          break
-        else
-          next
-        end
-      end
-      q
+      return Mascot::DAT::Query.new(self.read_section(:"query#{n}"))
     end
-
     alias_method :spectrum, :query
-
 
     # Go to a section of the Mascot DAT file
     def goto(key)
@@ -189,15 +164,6 @@ module Mascot
       @dat_file.rewind
     end
 
-    # Parse the ion string of mz/intensity peaks in Ions section
-    # Peaks are not ordered, so we must account for that.
-    def parse_mzi(ions_str)
-      mzi_tmp = []
-      ions_str.split(",").collect do |mzpair|
-        mzi_tmp <<  mzpair.split(":").collect {|e| e.to_f}
-      end
-      # now sort the mz_tmp array as ascending m/z, and return the array
-      mzi_tmp.sort
-    end
+
   end
 end
