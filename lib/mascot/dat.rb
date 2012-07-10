@@ -87,7 +87,7 @@ module Mascot
 
     # Parse the enzyme information from the DAT file
     #
-    # @return [[Mascot::DAT::Enzyme]]
+    # @return [Array<Mascot::DAT::Enzyme>]
     def enzyme
       @enzyme ||= Mascot::DAT::Enzyme.new(self.read_section(:enzyme))
     end
@@ -110,13 +110,27 @@ module Mascot
     end
 
     # Puts the IO cursor at the beginning of peptide result section. Returns an iterator/parser for PSM results
-    # @return [Mascot::DAT::Peptides]
+    #
+    # @param cache_psm_index Whether to cache the positions of the PSMs. If you just want to iterate
+    #                        through PSMs, you do not need to cache the index.
+    # @return [Mascot::DAT::Peptides, NilClass]
     def peptides(cache_psm_index=true)
-      Mascot::DAT::Peptides.new(self.dat_file, self.idx[:peptides], cache_psm_index)
+      Mascot::DAT::Peptides.new(self, :peptides, cache_psm_index)
     end
 
+    # If the DAT file has a decoy section, puts the IO cursor at the beginning of decoy_peptide
+    # result section and returns an iterator/parser for the decoy PSM results.
+    # If no decoy section exists, it will return nil.
+    #
+    # @param cache_psm_index Whether to cache the positions of the PSMs. If you just want to iterate
+    #                        through PSMs, you do not need to cache the index.
+    # @return [Mascot::DAT::Peptides, NilClass]
     def decoy_peptides(cache_psm_index=true)
-      Mascot::DAT::Peptides.new(self.dat_file, self.idx[:decoy_peptides], cache_psm_index)
+      if @idx.has_key? :decoy_peptides
+        Mascot::DAT::Peptides.new(self,:decoy_peptides, cache_psm_index)
+      else
+        nil
+      end
     end
 
 
