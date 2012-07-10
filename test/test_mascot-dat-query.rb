@@ -12,7 +12,7 @@ class TestMascotDatQuery < TestMascotDatHelper
     assert_equal("281.832701459371_513",@query.title)
   end
   def test_rtinseconds
-    assert_equal(513, @query.rtinseconds)
+    assert_equal(513.0, @query.rtinseconds)
   end
   def test_index
     assert_equal(30,@query.index)
