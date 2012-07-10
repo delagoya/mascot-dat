@@ -77,7 +77,7 @@ module Mascot
           when "index"
             @index = v.to_i
           when "rtinseconds"
-            @rtinseconds = v.to_i
+            @rtinseconds = v.to_f
           when "charge"
             @charge = v
           when "mass_min"
